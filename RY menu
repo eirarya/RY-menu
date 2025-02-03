@@ -33,7 +33,7 @@ end
 
 -- Cria a interface do usuário
 local userInterface = {
-    title = "Shipping Lanes Menu",
+    title = "RY menu",
     options = {
         {"Teleport", teleport},
         {"Manage Money", manageMoney},
