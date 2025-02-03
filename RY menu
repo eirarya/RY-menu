@@ -11,7 +11,8 @@ local initialMoney = 1000
 -- Cria uma função para gerenciar o dinheiro
 function manageMoney(amount)
     -- Adiciona a quantia específica de dinheiro à minha conta no jogo
-    game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = amount
+    local player = game.Players.LocalPlayer
+    player.Character.Humanoid.WalkSpeed = amount
 end
 
 -- Cria uma função para teletransportar para diferentes locais do mapa
@@ -35,28 +36,43 @@ local userInterface = {
     title = "Shipping Lanes Menu",
     options = {
         {"Teleport", teleport},
-        {"Manage Money", manageMoney}
+        {"Manage Money", manageMoney},
+        {"Auto-Fuel", function()
+            local player = game.Players.LocalPlayer
+            player.Character.Fuel.Value += 1000
+        end}
     }
 }
 
 -- Define uma função para exibir a interface do usuário
 function showUserInterface()
-    -- Exibe a título da interface
+    -- Exibe o título da interface
     print(userInterface.title)
-    
+
     -- Exibe as opções disponíveis
     for i, option in ipairs(userInterface.options) do
         print(i .. ". " .. option[1])
     end
-    
+
     -- Permite que o usuário escolha uma opção
     local choice = tonumber(readline())
     if userInterface.options[choice + 1] then
-        userInterface.options[choice + 1][2](1000) -- Exemplo de usar a função manageMoney para adicionar dinheiro à conta do jogador
+        userInterface.options[choice + 1][2]()
     else
         print("Invalid option.")
     end
 end
 
--- Chama a função para exibir a interface do usuário
+-- Cria um script para executar a interface do usuário
+local script = game.Players.LocalPlayer.PlayerScripts:FindFirstChild("User Interface")
+
+if not script then
+    script = Instance.new("Script")
+    script.Name = "User Interface"
+    script.Parent = game.Players.LocalPlayer.PlayerScripts
+end
+
+script.Executed:Connect(showUserInterface)
+
+-- Executa a interface do usuário para garantir que ela seja exibida na tela do jogador
 showUserInterface()
