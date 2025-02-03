@@ -1,78 +1,23 @@
--- Define a lista de locais do mapa
-local mapLocations = {
-    "Port", 
-    "Market", 
-    "Warehouse"
-}
+-- Define o nome do Hub
+local hubName = "RY Hub"
 
--- Define a quantidade inicial de dinheiro da conta
-local initialMoney = 1000
+-- Cria uma instancia do Hub
+local hub = Instance.new("Folder")
+hub.Name = hubName
 
--- Cria uma função para gerenciar o dinheiro
-function manageMoney(amount)
-    -- Adiciona a quantia específica de dinheiro à minha conta no jogo
+-- Adiciona todos os jogos do Roblox ao Hub
+for _, game in pairs(game:GetService("GameHub"):GetDescendants()) do
+    local folder = Instance.new("Folder")
+    folder.Name = game.Name
+    folder.Parent = hub
+end
+
+-- Cria a tecla de atalho Ctrl para minimizar o Hub
+local keyboard = game.Players.LocalPlayer.Character. KeyboardInput
+keyboard.KeyCode = Enum.KeyCode.LeftControl
+keyboard.KeyCode:Connect(function()
     local player = game.Players.LocalPlayer
-    player.Character.Humanoid.WalkSpeed = amount
-end
-
--- Cria uma função para teletransportar para diferentes locais do mapa
-function teleport(mapLocation)
-    -- Teleportar para o local especificado
-    local player = game.Players.LocalPlayer
-    if mapLocations[mapLocation] then
-        local position = {
-            x = (tonumber(string.match(mapLocations[mapLocation], "%d+")) / 100) * 1.5 - 0.75,
-            y = tonumber(string.match(mapLocations[mapLocation], "%d+")) / 100 + 0.25,
-            z = tonumber(string.match(mapLocations[mapLocation], "%d+")) / 100
-        }
-        player.Character.HumanoidRootPart.Position = position
-    else
-        print("Invalid map location.")
+    if player.Character.HumanoidRootPart.Parent == hub then
+        player.Character.HumanoidRootPart:Destroy()
     end
-end
-
--- Cria a interface do usuário
-local userInterface = {
-    title = "RY menu",
-    options = {
-        {"Teleport", teleport},
-        {"Manage Money", manageMoney},
-        {"Auto-Fuel", function()
-            local player = game.Players.LocalPlayer
-            player.Character.Fuel.Value += 1000
-        end}
-    }
-}
-
--- Define uma função para exibir a interface do usuário
-function showUserInterface()
-    -- Exibe o título da interface
-    print(userInterface.title)
-
-    -- Exibe as opções disponíveis
-    for i, option in ipairs(userInterface.options) do
-        print(i .. ". " .. option[1])
-    end
-
-    -- Permite que o usuário escolha uma opção
-    local choice = tonumber(readline())
-    if userInterface.options[choice + 1] then
-        userInterface.options[choice + 1][2]()
-    else
-        print("Invalid option.")
-    end
-end
-
--- Cria um script para executar a interface do usuário
-local script = game.Players.LocalPlayer.PlayerScripts:FindFirstChild("User Interface")
-
-if not script then
-    script = Instance.new("Script")
-    script.Name = "User Interface"
-    script.Parent = game.Players.LocalPlayer.PlayerScripts
-end
-
-script.Executed:Connect(showUserInterface)
-
--- Executa a interface do usuário para garantir que ela seja exibida na tela do jogador
-showUserInterface()
+end)
