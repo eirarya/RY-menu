@@ -1,0 +1,62 @@
+-- Define a lista de locais do mapa
+local mapLocations = {
+    "Port", 
+    "Market", 
+    "Warehouse"
+}
+
+-- Define a quantidade inicial de dinheiro da conta
+local initialMoney = 1000
+
+-- Cria uma função para gerenciar o dinheiro
+function manageMoney(amount)
+    -- Adiciona a quantia específica de dinheiro à minha conta no jogo
+    game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = amount
+end
+
+-- Cria uma função para teletransportar para diferentes locais do mapa
+function teleport(mapLocation)
+    -- Teleportar para o local especificado
+    local player = game.Players.LocalPlayer
+    if mapLocations[mapLocation] then
+        local position = {
+            x = (tonumber(string.match(mapLocations[mapLocation], "%d+")) / 100) * 1.5 - 0.75,
+            y = tonumber(string.match(mapLocations[mapLocation], "%d+")) / 100 + 0.25,
+            z = tonumber(string.match(mapLocations[mapLocation], "%d+")) / 100
+        }
+        player.Character.HumanoidRootPart.Position = position
+    else
+        print("Invalid map location.")
+    end
+end
+
+-- Cria a interface do usuário
+local userInterface = {
+    title = "Shipping Lanes Menu",
+    options = {
+        {"Teleport", teleport},
+        {"Manage Money", manageMoney}
+    }
+}
+
+-- Define uma função para exibir a interface do usuário
+function showUserInterface()
+    -- Exibe a título da interface
+    print(userInterface.title)
+    
+    -- Exibe as opções disponíveis
+    for i, option in ipairs(userInterface.options) do
+        print(i .. ". " .. option[1])
+    end
+    
+    -- Permite que o usuário escolha uma opção
+    local choice = tonumber(readline())
+    if userInterface.options[choice + 1] then
+        userInterface.options[choice + 1][2](1000) -- Exemplo de usar a função manageMoney para adicionar dinheiro à conta do jogador
+    else
+        print("Invalid option.")
+    end
+end
+
+-- Chama a função para exibir a interface do usuário
+showUserInterface()
